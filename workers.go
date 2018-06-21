@@ -54,3 +54,37 @@ func Enqueue(job *Job) error {
 
 	return conn.Flush()
 }
+
+func PriEnqueue(job *Job) error {
+	err := Init()
+	if err != nil {
+		return err
+	}
+
+	conn, err := GetConn()
+	if err != nil {
+		logger.Criticalf("Error on getting connection on prienqueue")
+		return err
+	}
+	defer PutConn(conn)
+
+	buffer, err := json.Marshal(job.Payload)
+	if err != nil {
+		logger.Criticalf("Cant marshal payload on prienqueue")
+		return err
+	}
+
+	err = conn.Send("LPUSH", fmt.Sprintf("%squeue:%s", workerSettings.Namespace, job.Queue), buffer)
+	if err != nil {
+		logger.Criticalf("Cant push to queue")
+		return err
+	}
+
+	err = conn.Send("SADD", fmt.Sprintf("%squeues", workerSettings.Namespace), job.Queue)
+	if err != nil {
+		logger.Criticalf("Cant register queue to list of use queues")
+		return err
+	}
+
+	return conn.Flush()
+}
