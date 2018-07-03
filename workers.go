@@ -24,7 +24,7 @@ func Register(class string, worker workerFunc) {
 }
 
 func GenerateJobID(job *Job, id string) error {
-	if id != "" {
+	if id == "" {
 		u, err := uuid.NewV4()
 		if err != nil {
 			return err
