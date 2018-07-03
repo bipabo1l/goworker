@@ -38,7 +38,7 @@ func GenerateJobID(job *Job, id string) error {
 }
 
 // 添加到队列
-func Enqueue(job *Job, isPriority bool, uuid string) (*JobInfo, error) {
+func Enqueue(job *Job, isPriority bool, uuid string, property string) (*JobInfo, error) {
 
 	GenerateJobID(job, uuid)
 
@@ -86,6 +86,7 @@ func Enqueue(job *Job, isPriority bool, uuid string) (*JobInfo, error) {
 	// 记录jobinfo
 	jobInfo := &JobInfo{
 		JobId:      job.Payload.JobID,
+		Property:   property,
 		CreateTime: time.Now().Unix(),
 		State:      "Pending",
 	}
