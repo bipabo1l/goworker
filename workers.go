@@ -23,19 +23,24 @@ func Register(class string, worker workerFunc) {
 	workers[class] = worker
 }
 
-func GenerateJobID(job *Job) error {
-	u, err := uuid.NewV4()
-	if err != nil {
-		return err
+func GenerateJobID(job *Job, id string) error {
+	if id != "" {
+		u, err := uuid.NewV4()
+		if err != nil {
+			return err
+		}
+		job.Payload.JobID = u.String()
+	} else {
+		job.Payload.JobID = id
 	}
-	job.Payload.JobID = u.String()
+
 	return nil
 }
 
 // 添加到队列
-func Enqueue(job *Job, isPriority bool) (*JobInfo, error) {
+func Enqueue(job *Job, isPriority bool, uuid string) (*JobInfo, error) {
 
-	GenerateJobID(job)
+	GenerateJobID(job, uuid)
 
 	err := Init()
 	if err != nil {
