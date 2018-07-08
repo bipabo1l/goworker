@@ -28,53 +28,53 @@ func (w *worker) MarshalJSON() ([]byte, error) {
 }
 
 // 获取job info
-func (w *worker) GetJobInfo(jobId string) (*JobInfo, error) {
-	conn, err := GetConn()
-	if err != nil {
-		logger.Criticalf("Error on getting connection in worker %v: %v", w, err)
-		return nil, err
-	} else {
-		w.open(conn)
-		PutConn(conn)
-	}
-	jobInfoStr, err := redis.String(conn.Do("GET", fmt.Sprintf("%s:jobs:%s", workerSettings.Namespace, jobId)))
-	if err != nil {
-		logger.Criticalf("读取job状态失败")
-		return nil, err
-	}
-	jobInfo := &JobInfo{}
-	err = json.Unmarshal([]byte(jobInfoStr), jobInfo)
-	if err != nil {
-		return nil, err
-	}
-	return jobInfo, nil
-}
+//func (w *worker) GetJobInfo(jobId string) (*JobInfo, error) {
+//	conn, err := GetConn()
+//	if err != nil {
+//		logger.Criticalf("Error on getting connection in worker %v: %v", w, err)
+//		return nil, err
+//	} else {
+//		w.open(conn)
+//		PutConn(conn)
+//	}
+//	jobInfoStr, err := redis.String(conn.Do("GET", fmt.Sprintf("%s:jobs:%s", workerSettings.Namespace, jobId)))
+//	if err != nil {
+//		logger.Criticalf("读取job状态失败")
+//		return nil, err
+//	}
+//	jobInfo := &JobInfo{}
+//	err = json.Unmarshal([]byte(jobInfoStr), jobInfo)
+//	if err != nil {
+//		return nil, err
+//	}
+//	return jobInfo, nil
+//}
 
 // 更新job
-func (w *worker)UpdateJobInfo(job *Job, jobInfo JobInfo) (error){
-
-	conn, err := GetConn()
-	if err != nil {
-		logger.Criticalf("Error on getting connection in worker %v: %v", w, err)
-		return  err
-	} else {
-		w.open(conn)
-		PutConn(conn)
-	}
-
-	jInfo, err := json.Marshal(jobInfo)
-	if err != nil {
-		return err
-	}
-	err = conn.Send("SET", fmt.Sprintf("%s:jobs:%s", workerSettings.Namespace, job.Payload.JobID), jInfo)
-	if err != nil {
-		logger.Criticalf("Update job failed")
-		return err
-	}
-
-	conn.Flush()
-	return nil
-}
+//func (w *worker)UpdateJobInfo(job *Job, jobInfo JobInfo) (error){
+//
+//	conn, err := GetConn()
+//	if err != nil {
+//		logger.Criticalf("Error on getting connection in worker %v: %v", w, err)
+//		return  err
+//	} else {
+//		w.open(conn)
+//		PutConn(conn)
+//	}
+//
+//	jInfo, err := json.Marshal(jobInfo)
+//	if err != nil {
+//		return err
+//	}
+//	err = conn.Send("SET", fmt.Sprintf("%s:jobs:%s", workerSettings.Namespace, job.Payload.JobID), jInfo)
+//	if err != nil {
+//		logger.Criticalf("Update job failed")
+//		return err
+//	}
+//
+//	conn.Flush()
+//	return nil
+//}
 
 func (w *worker) start(conn *RedisConn, job *Job) error {
 	work := &work{
@@ -92,14 +92,14 @@ func (w *worker) start(conn *RedisConn, job *Job) error {
 	logger.Debugf("Processing %s since %s [%v]", work.Queue, work.RunAt, work.Payload.Class)
 
 	// 更新job状态
-	jobInfo, err := w.GetJobInfo(job.Payload.JobID)
-	if err != nil {
-		logger.Criticalf("获取jobinfo失败:", err)
-		return err
-	}
-	jobInfo.StartTime = time.Now().Unix()
-	jobInfo.State = "Started"
-	w.UpdateJobInfo(job, *jobInfo)
+	//jobInfo, err := w.GetJobInfo(job.Payload.JobID)
+	//if err != nil {
+	//	logger.Criticalf("获取jobinfo失败:", err)
+	//	return err
+	//}
+	//jobInfo.StartTime = time.Now().Unix()
+	//jobInfo.State = "Started"
+	//w.UpdateJobInfo(job, *jobInfo)
 	return w.process.start(conn)
 }
 
@@ -121,14 +121,14 @@ func (w *worker) fail(conn *RedisConn, job *Job, err error) error {
 	conn.Send("RPUSH", fmt.Sprintf("%sfailed", workerSettings.Namespace), buffer)
 
 	// 更新job状态
-	jobInfo, err := w.GetJobInfo(job.Payload.JobID)
-	if err != nil {
-		logger.Criticalf("获取jobinfo失败:", err)
-		return err
-	}
-	jobInfo.EndTime = time.Now().Unix()
-	jobInfo.State = "Failed"
-	w.UpdateJobInfo(job, *jobInfo)
+	//jobInfo, err := w.GetJobInfo(job.Payload.JobID)
+	//if err != nil {
+	//	logger.Criticalf("获取jobinfo失败:", err)
+	//	return err
+	//}
+	//jobInfo.EndTime = time.Now().Unix()
+	//jobInfo.State = "Failed"
+	//w.UpdateJobInfo(job, *jobInfo)
 
 	return w.process.fail(conn)
 }
@@ -138,14 +138,14 @@ func (w *worker) succeed(conn *RedisConn, job *Job) error {
 	conn.Send("INCR", fmt.Sprintf("%sstat:processed:%s", workerSettings.Namespace, w))
 
 	// 更新job状态
-	jobInfo, err := w.GetJobInfo( job.Payload.JobID)
-	if err != nil {
-		logger.Criticalf("获取jobinfo失败:", err)
-		return err
-	}
-	jobInfo.EndTime = time.Now().Unix()
-	jobInfo.State = "Succeed"
-	w.UpdateJobInfo(job, *jobInfo)
+	//jobInfo, err := w.GetJobInfo( job.Payload.JobID)
+	//if err != nil {
+	//	logger.Criticalf("获取jobinfo失败:", err)
+	//	return err
+	//}
+	//jobInfo.EndTime = time.Now().Unix()
+	//jobInfo.State = "Succeed"
+	//w.UpdateJobInfo(job, *jobInfo)
 
 	return nil
 }
