@@ -59,9 +59,11 @@
       <file leaf-file-name="worker.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/worker.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-786">
-              <caret line="147" column="36" lean-forward="true" selection-start-line="140" selection-start-column="6" selection-end-line="147" selection-end-column="36" />
-              <folding />
+            <state relative-caret-position="-2826">
+              <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+              <folding>
+                <element signature="e#18#78#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -95,6 +97,7 @@
       <find>you must specify at least one queue</find>
       <find>读取job状态失败</find>
       <find>GetJobInfo</find>
+      <find>UpdateJobInfo</find>
     </findStrings>
   </component>
   <component name="GOROOT" path="/usr/local/Cellar/go/1.10/libexec" />
@@ -270,9 +273,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/worker.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-786">
-          <caret line="147" column="36" lean-forward="true" selection-start-line="140" selection-start-column="6" selection-end-line="147" selection-end-column="36" />
-          <folding />
+        <state relative-caret-position="-2826">
+          <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+          <folding>
+            <element signature="e#18#78#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

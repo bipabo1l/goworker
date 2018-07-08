@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"sync"
 	"time"
-	"github.com/garyburd/redigo/redis"
 )
 
 type worker struct {
@@ -102,8 +101,6 @@ func (w *worker) start(conn *RedisConn, job *Job) error {
 	//w.UpdateJobInfo(job, *jobInfo)
 	return w.process.start(conn)
 }
-
-
 
 func (w *worker) fail(conn *RedisConn, job *Job, err error) error {
 	failure := &failure{
